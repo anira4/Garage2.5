@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Garage2._5.DAL;
 using Garage2._5.Helper;
 using Garage2._5.Models;
+using Garage2._5.ViewModels;
 
 namespace Garage2._5.Controllers
 {
@@ -202,8 +203,16 @@ namespace Garage2._5.Controllers
             {
                 return HttpNotFound();
             }
+
+            TempData["checkouttime"] = DateTime.Now;
+            TempData["priceperminute"] = 1;
+            //vehicle.Cost = Math.Round((decimal)(vehicle.CheckoutTime - vehicle.CheckinTime).TotalMinutes) * db.GarageConfiguration.PricePerMinute;
+            //db.Vehicles.AddOrUpdate(v => v.Id, vehicle);
+            //db.SaveChanges();
+
             return View(vehicle);
         }
+
 
         // POST: Vehicles/Delete/5
         [HttpPost, ActionName("Checkout")]
@@ -211,9 +220,12 @@ namespace Garage2._5.Controllers
         public ActionResult CheckoutConfirmed(int id)
         {
             Vehicle vehicle = db.Vehicles.Find(id);
+            var receiptViewModel = new ReceiptViewModel();
+            receiptViewModel.Update(vehicle, (DateTime)TempData["checkouttime"], (int)TempData["priceperminut"]);
             db.Vehicles.Remove(vehicle);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            //return RedirectToAction("Index");
+            return View("Receipt", receiptViewModel);
         }
 
         protected override void Dispose(bool disposing)
