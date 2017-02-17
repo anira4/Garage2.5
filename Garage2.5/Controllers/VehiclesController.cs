@@ -18,11 +18,15 @@ namespace Garage2._5.Controllers
         private RegistrationVerifier registrationVerifier = new RegistrationVerifier();
 
         // GET: Vehicles
-        public ActionResult Index(string orderBy, string currentFilter, string searchString, string selectedvehicletype, int page = 1)
+        public ActionResult Index(string orderBy, string currentFilter, string searchString, int? selectedvehicletype = null, int page = 1)
         {
             var vehicles = db.Vehicles.Include(v => v.Owner).Include(v => v.Type);
-            
 
+            if (selectedvehicletype != null)
+            {
+                vehicles = vehicles.Where(v => v.Type.Id == selectedvehicletype);
+                ViewBag.selectedvehicletype = selectedvehicletype;
+            }
 
             switch (orderBy)
             {
@@ -52,7 +56,7 @@ namespace Garage2._5.Controllers
                     break;                
             }
             ViewBag.CurrentSort = orderBy;
-
+            ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             return View(vehicles.ToList());
         }
 
@@ -82,7 +86,7 @@ namespace Garage2._5.Controllers
         }
 
         // GET: Vehicles/Create
-        public ActionResult Create()
+        public ActionResult Checkin()
         {
             MakeCreateDropDowns(null);
             return View();
@@ -93,7 +97,7 @@ namespace Garage2._5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Registration,CheckinTime,VehicleTypeId,MemberId")] Vehicle vehicle)
+        public ActionResult Checkin([Bind(Include = "Id,Registration,CheckinTime,VehicleTypeId,MemberId")] Vehicle vehicle)
         {
             if (ModelState.IsValid)
             {
@@ -173,7 +177,7 @@ namespace Garage2._5.Controllers
         }
 
         // GET: Vehicles/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Checkout(int? id)
         {
             if (id == null)
             {
@@ -188,9 +192,9 @@ namespace Garage2._5.Controllers
         }
 
         // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Checkout")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult CheckoutConfirmed(int id)
         {
             Vehicle vehicle = db.Vehicles.Find(id);
             db.Vehicles.Remove(vehicle);

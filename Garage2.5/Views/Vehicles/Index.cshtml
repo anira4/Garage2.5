@@ -1,20 +1,20 @@
 ﻿@model IEnumerable<Garage2._5.Models.Vehicle>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Parked Vehicles";
 }
 
-<h2>Index</h2>
+<h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Checkin vehicle", "Checkin")
 </p>
 <p>
     @using (Html.BeginForm("Index", "Vehicles", FormMethod.Get))
     {
         <span>
             Find by registration number: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-            @*@Html.DropDownList("selectedvehicletype", new SelectList(Enum.GetNames(typeof(Vehicle.VehicleType))), "All vehicle types", htmlAttributes: new { @class = "selectStyle" })*@
+            @Html.DropDownList("selectedvehicletype", (SelectList)ViewBag.VehicleTypes, "All vehicle types", htmlAttributes: new { @class = "selectStyle" })
             <input type="submit" value="Search" />
         </span>
     }
@@ -22,10 +22,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Owner.Name).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "user" ? "user_dec" : "user", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Owner).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "user" ? "user_dec" : "user", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Type.Type).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "type" ? "type_dec" : "type", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Type).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "type" ? "type_dec" : "type", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Registration).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "registration" ? "registration_dec" : "registration", currentFilter = ViewBag.CurrentFilter })
@@ -53,7 +53,7 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Checkout", "Checkout", new { id=item.Id })
         </td>
     </tr>
 }
