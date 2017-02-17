@@ -1,6 +1,9 @@
 ﻿using Garage2._5.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
+using Garage2._5.Helper;
 
 namespace Garage2._5.DAL
 {
@@ -30,28 +33,24 @@ namespace Garage2._5.DAL
             context.Members.AddRange(members);
             context.SaveChanges();
 
-            var vehicles = new[]
+            var gen = new RandomRegistration();
+            var rand = new Random();
+
+            var vehicles = new List<Vehicle>(vehicleTypes.Length * 3);
+            while (vehicles.Capacity != vehicles.Count)
             {
-                new Vehicle { VehicleTypeId = vehicleTypes[0].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[0].Id, Registration = "ABC123" },
-                new Vehicle { VehicleTypeId = vehicleTypes[0].Id, CheckinTime = DateTime.Parse("2017-02-17 11:35"), MemberId = members[1].Id, Registration = "XCD234"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[0].Id, CheckinTime = DateTime.Parse("2017-02-17 10:30"), MemberId = members[2].Id, Registration = "IDW345"  },
-
-                new Vehicle { VehicleTypeId = vehicleTypes[1].Id, CheckinTime = DateTime.Parse("2017-02-17 11:20"), MemberId = members[3].Id, Registration = "PCE456"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[1].Id, CheckinTime = DateTime.Parse("2017-02-16 15:40"), MemberId = members[4].Id, Registration = "POX456"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[1].Id, CheckinTime = DateTime.Parse("2017-02-16 16:30"), MemberId = members[0].Id, Registration = "PCE567"  },
-
-                new Vehicle { VehicleTypeId = vehicleTypes[2].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[1].Id, Registration = "OLW471"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[2].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[2].Id, Registration = "PCY432"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[2].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[3].Id, Registration = "OIX654"  },
-
-                new Vehicle { VehicleTypeId = vehicleTypes[3].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[4].Id, Registration = "OXY432"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[3].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[1].Id, Registration = "MCR634"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[3].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[2].Id, Registration = "OMR543"  },
-
-                new Vehicle { VehicleTypeId = vehicleTypes[4].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[3].Id, Registration = "PXT476"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[4].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[4].Id, Registration = "LBN477"  },
-                new Vehicle { VehicleTypeId = vehicleTypes[4].Id, CheckinTime = DateTime.Parse("2017-02-17 11:30"), MemberId = members[0].Id, Registration = "MUX634"  }
-            };
+                var vehicle = new Vehicle {
+                    VehicleTypeId = vehicleTypes[rand.Next(vehicleTypes.Length)].Id,
+                    CheckinTime = DateTime.Now.AddMinutes(-rand.Next(24 * 60)),
+                    MemberId = members[rand.Next(members.Length)].Id
+                };
+                do
+                {
+                    vehicle.Registration = gen.Next();
+                } while (vehicles.Any(v => v.Registration == vehicle.Registration));
+                vehicles.Add(vehicle);
+                
+            }
             context.Vehicles.AddRange(vehicles);
             context.SaveChanges();
         }
