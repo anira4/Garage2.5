@@ -16,9 +16,51 @@ namespace Garage2._5.Controllers
         private GarageContext db = new GarageContext();
 
         // GET: Members
-        public ActionResult Index()
+        public ActionResult Index(string orderBy, string currentFilter, string searchString, int page = 1)
         {
-            return View(db.Members.ToList());
+            IQueryable<Member> members = db.Members;
+
+            if (searchString != null)
+            {
+                page = 1; // If the search string is changed during paging, the page has to be reset to 1
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentMemberFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                members = members.Where(m => m.Name.Contains(searchString) ||
+                                            m.Username.Contains(searchString) ||
+                                            m.Phone.Contains(searchString));
+            }
+            switch (orderBy)
+            {
+                case "username":
+                    members = members.OrderBy(m => m.Username);
+                    break;
+                case "username_dec":
+                    members = members.OrderByDescending(m => m.Username);
+                    break;
+                case "name":
+                    members = members.OrderBy(m => m.Name);
+                    break;
+                case "name_dec":
+                    members = members.OrderByDescending(m => m.Name);
+                    break;
+                case "phone":
+                    members = members.OrderBy(m => m.Phone);
+                    break;
+                case "phone_dec":
+                    members = members.OrderByDescending(m => m.Phone);
+                    break;
+                default:
+                    members = members.OrderBy(m => m.Name);
+                    break;
+            }
+            ViewBag.CurrentSort = orderBy;
+            return View(members.ToList());
         }
 
         // GET: Members/Create

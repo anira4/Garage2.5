@@ -28,6 +28,20 @@ namespace Garage2._5.Controllers
                 ViewBag.selectedvehicletype = selectedvehicletype;
             }
 
+            if (searchString != null)
+            {
+                page = 1; // If the search string is changed during paging, the page has to be reset to 1
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicles = vehicles.Where(v => v.Registration.Contains(searchString));
+            }
+
             switch (orderBy)
             {
                 case "user":
@@ -55,7 +69,7 @@ namespace Garage2._5.Controllers
                     vehicles = vehicles.OrderBy(v => v.CheckinTime);
                     break;                
             }
-            ViewBag.CurrentSort = orderBy;
+                                                                                                  
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             return View(vehicles.ToList());
         }
