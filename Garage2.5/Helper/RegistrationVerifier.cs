@@ -183,13 +183,24 @@ namespace Garage2._5.Helper
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'X', 'Y', 'Z'
         };
 
+        public string LastErrorMessage { get; private set; }
+
         public bool Verify(string input)
         {
-            var regexres = Regex.IsMatch(Regex.Replace(input, "\\s", ""),
+            LastErrorMessage = null;
+            var result = Regex.IsMatch(Regex.Replace(input, "\\s", ""),
                 "^[" + string.Join("|", letters) + "]{3}[0-9]{3}$");
-            if (!regexres)
-                return false;
-            return !bannedWords.Contains(input.Substring(startIndex: 0, length: 3));
+            if (result)
+            {
+                var str = input.Substring(startIndex: 0, length: 3);
+                result = !bannedWords.Contains(str);
+                if (!result)
+                    LastErrorMessage = $"'{str}' is not an allowed letter combination";
+            }
+            if (LastErrorMessage == null)
+                LastErrorMessage = "Invalid format, expected 3 letters followed by 3 digits restricted to the following letters:\n" +
+                    string.Join("", letters);
+            return result;
         }
     }
 }
