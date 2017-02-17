@@ -1,14 +1,20 @@
-﻿using Garage2._5.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Garage2._5.Helper;
+using Garage2._5.Models;
 
 namespace Garage2._5.DAL
 {
     internal class GarageContextInitializer : DropCreateDatabaseAlways<GarageContext>
     {
+        private static string MakeUsername(string name)
+        {
+            var names = name.Split(' ');
+            return (names[0].Substring(startIndex: 0, length: 1) + names[1]).RemoveDiacritics().ToLowerInvariant();
+        }
+
         protected override void Seed(GarageContext context)
         {
             var vehicleTypes = new[]
@@ -22,14 +28,22 @@ namespace Garage2._5.DAL
             context.VehicleTypes.AddRange(vehicleTypes);
             context.SaveChanges();
 
-            var members = new[]
+            var nameGen = new RandomName();
+            var numGen = new RandomPhone();
+
+            var members = new List<Member>(vehicleTypes.Length * 3);
+            for (var i = 0; i < members.Capacity; i++)
             {
-                new Member { Username="olle", Name = "Olle Olsson", Phone = "08-6582345" },
-                new Member { Username="kalo", Name = "Kalle Olsson", Phone = "08-1212345"  },
-                new Member { Username="olka", Name = "Olle Karlsson", Phone = "08-6758345"  },
-                new Member { Username="larol", Name = "Olle Larsson", Phone = "08-8362345"  },
-                new Member { Username="perol", Name = "Olle Persson", Phone = "08-8932345"  }
-            };
+                var member = new Member
+                {
+                    Name = nameGen.Next(),
+                    Phone = numGen.Next()
+                };
+                member.Username = MakeUsername(member.Name);
+                if (!members.Any(m => m.Name == member.Name || m.Username == member.Username))
+                    members.Add(member);
+            }
+
             context.Members.AddRange(members);
             context.SaveChanges();
 
@@ -39,17 +53,17 @@ namespace Garage2._5.DAL
             var vehicles = new List<Vehicle>(vehicleTypes.Length * 3);
             while (vehicles.Capacity != vehicles.Count)
             {
-                var vehicle = new Vehicle {
+                var vehicle = new Vehicle
+                {
                     VehicleTypeId = vehicleTypes[rand.Next(vehicleTypes.Length)].Id,
                     CheckinTime = DateTime.Now.AddMinutes(-rand.Next(24 * 60)),
-                    MemberId = members[rand.Next(members.Length)].Id
+                    MemberId = members[rand.Next(members.Count)].Id
                 };
                 do
                 {
                     vehicle.Registration = gen.Next();
                 } while (vehicles.Any(v => v.Registration == vehicle.Registration));
                 vehicles.Add(vehicle);
-                
             }
             context.Vehicles.AddRange(vehicles);
             context.SaveChanges();

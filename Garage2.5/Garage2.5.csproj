@@ -132,9 +132,12 @@
     <Compile Include="Controllers\VehiclesController.cs" />
     <Compile Include="DAL\GarageContext.cs" />
     <Compile Include="DAL\GarageContextInitializer.cs" />
+    <Compile Include="Helper\RandomPhone.cs" />
+    <Compile Include="Helper\StringExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\RandomName.cs" />
     <Compile Include="Helper\RandomRegistration.cs" />
     <Compile Include="Helper\RegistrationNormalizer.cs" />
     <Compile Include="Helper\RegistrationVerifier.cs" />
