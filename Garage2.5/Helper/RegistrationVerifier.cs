@@ -188,7 +188,7 @@ namespace Garage2._5.Helper
         public bool Verify(string input)
         {
             LastErrorMessage = null;
-            var result = Regex.IsMatch(Regex.Replace(input, "\\s", ""),
+            var result = Regex.IsMatch(RegistrationNormalizer.NormalizeForStorage(input),
                 "^[" + string.Join("|", letters) + "]{3}[0-9]{3}$");
             if (result)
             {
