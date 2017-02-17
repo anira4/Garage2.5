@@ -20,7 +20,7 @@
         </span>
     }
 </p>
-<table class="table">
+<table class="table table-striped">
     <tr>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Owner).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "user" ? "user_dec" : "user", currentFilter = ViewBag.CurrentFilter })
