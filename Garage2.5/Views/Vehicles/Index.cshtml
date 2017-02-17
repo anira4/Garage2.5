@@ -9,19 +9,29 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<p>
+    @using (Html.BeginForm("Index", "Vehicles", FormMethod.Get))
+    {
+        <span>
+            Find by registration number: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+            @*@Html.DropDownList("selectedvehicletype", new SelectList(Enum.GetNames(typeof(Vehicle.VehicleType))), "All vehicle types", htmlAttributes: new { @class = "selectStyle" })*@
+            <input type="submit" value="Search" />
+        </span>
+    }
+</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Owner.Username)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Owner.Name).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "user" ? "user_dec" : "user", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Type.Type)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Type.Type).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "type" ? "type_dec" : "type", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Registration)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Registration).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "registration" ? "registration_dec" : "registration", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CheckinTime)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.CheckinTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "checkintime" ? "checkintime_dec" : "checkintime", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -29,7 +39,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Owner.Username)
+            @Html.DisplayFor(modelItem => item.Owner.Name)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Type.Type)

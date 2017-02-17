@@ -16,11 +16,53 @@ namespace Garage2._5.Controllers
         private GarageContext db = new GarageContext();
 
         // GET: Vehicles
-        public ActionResult Index()
+        public ActionResult Index(string orderBy, string currentFilter, string searchString, string selectedvehicletype, int page = 1)
         {
             var vehicles = db.Vehicles.Include(v => v.Owner).Include(v => v.Type);
+            
+
+
+            switch (orderBy)
+            {
+                case "user":
+                    vehicles = vehicles.OrderBy(v => v.Owner.Name);
+                    break;
+                case "user_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.Owner.Name);
+                    break;
+                case "type":
+                    vehicles = vehicles.OrderBy(v => v.Type.Type);
+                    break;
+                case "type_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.Type.Type);
+                    break;
+                case "registration":
+                    vehicles = vehicles.OrderBy(v => v.Registration);
+                    break;
+                case "registration_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.Registration);
+                    break;
+                case "checkintime_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.CheckinTime);
+                    break;
+                default:
+                    vehicles = vehicles.OrderBy(v => v.CheckinTime);
+                    break;                
+            }
+            ViewBag.CurrentSort = orderBy;
+
             return View(vehicles.ToList());
         }
+
+
+        //private bool HasVacantSpots()
+        //{
+        //    var total = db.GarageConfiguration.ParkingSpaces;
+        //    var vacant = (int)Math.Ceiling((total * 3 - db.Vehicles.ToArray().Sum(v => v.Units)) / 3.0);
+        //    ViewBag.Vacant = $"Vacant parking spots: {vacant}/{total}";
+        //    ViewBag.HasVacantSpots = vacant > 0;
+        //    return ViewBag.HasVacantSpots;
+        //}
 
         // GET: Vehicles/Details/5
         public ActionResult Details(int? id)
