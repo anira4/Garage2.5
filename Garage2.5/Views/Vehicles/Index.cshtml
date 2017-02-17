@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Garage2._5.Models.Vehicle>
+﻿@using Garage2._5.Helper
+@model IEnumerable<Garage2._5.Models.Vehicle>
 
 @{
     ViewBag.Title = "Parked Vehicles";
@@ -31,7 +32,7 @@
             @Html.ActionLink(Html.DisplayNameFor(model => model.Registration).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "registration" ? "registration_dec" : "registration", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.CheckinTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "checkintime" ? "checkintime_dec" : "checkintime", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.ParkedTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "checkintime" ? "checkintime_dec" : "checkintime", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -45,10 +46,10 @@
             @Html.DisplayFor(modelItem => item.Type.Type)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Registration)
+            @RegistrationNormalizer.NormalizeForDisplay(item.Registration)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CheckinTime)
+            @Html.DisplayFor(modelItem => item.ParkedTime)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
