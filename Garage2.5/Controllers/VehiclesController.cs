@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Garage2._5.DAL;
+using Garage2._5.Helper;
 using Garage2._5.Models;
 
 namespace Garage2._5.Controllers
@@ -14,6 +15,7 @@ namespace Garage2._5.Controllers
     public class VehiclesController : Controller
     {
         private GarageContext db = new GarageContext();
+        private RegistrationVerifier registrationVerifier = new RegistrationVerifier();
 
         // GET: Vehicles
         public ActionResult Index(string orderBy, string currentFilter, string searchString, string selectedvehicletype, int page = 1)
@@ -82,8 +84,7 @@ namespace Garage2._5.Controllers
         // GET: Vehicles/Create
         public ActionResult Create()
         {
-            ViewBag.MemberId = new SelectList(db.Members, "Id", "Username");
-            ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type");
+            MakeCreateDropDowns(null);
             return View();
         }
 
@@ -96,14 +97,25 @@ namespace Garage2._5.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!registrationVerifier.Verify(vehicle.Registration))
+                {
+                    ModelState.AddModelError(nameof(vehicle.Registration), registrationVerifier.LastErrorMessage);
+                    MakeCreateDropDowns(vehicle);
+                    return View(vehicle);
+                }
+                vehicle.Registration = RegistrationNormalizer.NormalizeForStorage(vehicle.Registration);
+                if (db.Vehicles.Any(v => v.Registration == vehicle.Registration))
+                {
+                    ModelState.AddModelError(nameof(vehicle.Registration), $"A vehicle with the registration '{RegistrationNormalizer.NormalizeForDisplay(vehicle.Registration)}' already exist in the garage");
+                    MakeCreateDropDowns(vehicle);
+                    return View(vehicle);
+                }
                 vehicle.CheckinTime = DateTime.Now;
                 db.Vehicles.Add(vehicle);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.MemberId = new SelectList(db.Members, "Id", "Username", vehicle.MemberId);
-            ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type", vehicle.VehicleTypeId);
+            MakeCreateDropDowns(vehicle);
             return View(vehicle);
         }
 
@@ -133,13 +145,31 @@ namespace Garage2._5.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!registrationVerifier.Verify(vehicle.Registration))
+                {
+                    ModelState.AddModelError(nameof(vehicle.Registration), registrationVerifier.LastErrorMessage);
+                    MakeCreateDropDowns(vehicle);
+                    return View(vehicle);
+                }
+                vehicle.Registration = RegistrationNormalizer.NormalizeForStorage(vehicle.Registration);
+                if (db.Vehicles.Where(v => v.Id != vehicle.Id).Any(v => v.Registration == vehicle.Registration))
+                {
+                    ModelState.AddModelError(nameof(vehicle.Registration), $"A vehicle with the registration '{RegistrationNormalizer.NormalizeForDisplay(vehicle.Registration)}' already exist in the garage");
+                    MakeCreateDropDowns(vehicle);
+                    return View(vehicle);
+                }
                 db.Entry(vehicle).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.MemberId = new SelectList(db.Members, "Id", "Username", vehicle.MemberId);
-            ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type", vehicle.VehicleTypeId);
+            MakeCreateDropDowns(vehicle);
             return View(vehicle);
+        }
+
+        private void MakeCreateDropDowns(Vehicle vehicle)
+        {
+            ViewBag.MemberId = new SelectList(db.Members, "Id", "Username", vehicle?.MemberId);
+            ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type", vehicle?.VehicleTypeId);
         }
 
         // GET: Vehicles/Delete/5
