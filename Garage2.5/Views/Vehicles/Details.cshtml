@@ -1,0 +1,50 @@
+﻿@model Garage2._5.Models.Vehicle
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Vehicle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Owner.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Owner.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Type.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Registration)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CheckinTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CheckinTime)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
