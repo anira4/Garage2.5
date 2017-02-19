@@ -9,7 +9,7 @@ namespace Garage2._5.Models {
         public string Registration { get; set; }
 
         [Display(Name = "Checkin time")]
-        [DisplayFormat(DataFormatString = "{0:dd-MM HH\\:mm}")]
+        [DisplayFormat(DataFormatString = "{0:dd\\/MM HH\\:mm}")]
         public DateTime CheckinTime { get; set; }
 
         [Display(Name = "Parked Time")]
