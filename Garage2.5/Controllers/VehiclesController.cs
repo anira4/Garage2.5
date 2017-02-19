@@ -107,6 +107,22 @@ namespace Garage2._5.Controllers
             return View(vehicle);
         }
 
+        private IEnumerable<SelectListItem> GetSupportedList(Vehicle vehicle, bool edit) {
+            var sizes = db.VehicleTypes.Select(v => v.Size).Distinct().ToArray();
+            var supportedSize = sizes.Where(s => FindFirstFreeUnit(s) + s <= 300);
+            var selectList = db.VehicleTypes.ToArray().Select(t => new SelectListItem() {
+                Disabled = !supportedSize.Contains(t.Size),
+                Text = t.Type,
+                Value = t.Id.ToString(),
+                Selected = vehicle?.VehicleTypeId == t.Id
+            }).ToArray();
+            if (edit)
+                foreach (var itm in selectList)
+                    if (itm.Selected)
+                        itm.Disabled = false; // Make sure the currently selected item is enabled
+            return selectList;
+        }
+
         // GET: Vehicles/Create
         public ActionResult Checkin() {
             if (!HasVacantSpots())
@@ -191,7 +207,7 @@ namespace Garage2._5.Controllers
             {
                 return HttpNotFound();
             }
-            MakeCreateDropDowns(vehicle);
+            MakeCreateDropDowns(vehicle, true);
             return View(vehicle);
         }
 
@@ -220,13 +236,13 @@ namespace Garage2._5.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            MakeCreateDropDowns(vehicle);
+            MakeCreateDropDowns(vehicle, true);
             return View(vehicle);
         }
 
-        private void MakeCreateDropDowns(Vehicle vehicle)
+        private void MakeCreateDropDowns(Vehicle vehicle, bool edit = false)
         {
-            ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type", vehicle?.VehicleTypeId);
+            ViewBag.VehicleTypeId = GetSupportedList(vehicle, edit);
         }
 
         // GET: Vehicles/Delete/5
