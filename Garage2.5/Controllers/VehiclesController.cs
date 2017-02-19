@@ -120,8 +120,14 @@ namespace Garage2._5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Checkin([Bind(Include = "Id,Registration,CheckinTime,VehicleTypeId,MemberId")] Vehicle vehicle)
+        public ActionResult Checkin([Bind(Include = "Id,Registration,VehicleTypeId")] Vehicle vehicle, string username, string password)
         {
+            if (string.IsNullOrWhiteSpace(username)) {
+                ModelState.AddModelError("username", "The Username field is required.");
+                MakeCreateDropDowns(vehicle);
+                return View(vehicle);
+            }
+            ViewBag.UserName = username;
             if (ModelState.IsValid)
             {
                 if (!registrationVerifier.Verify(vehicle.Registration))
@@ -137,6 +143,19 @@ namespace Garage2._5.Controllers
                     MakeCreateDropDowns(vehicle);
                     return View(vehicle);
                 }
+                var user = db.Members.FirstOrDefault(m => m.Username == username);
+                if (user == null)
+                {
+                    ModelState.AddModelError("username", $"No member with the username '{username}' could be found!");
+                    MakeCreateDropDowns(vehicle);
+                    return View(vehicle);
+                }
+                if (user.Password != password) {
+                    ModelState.AddModelError("password", "Wrong password!");
+                    MakeCreateDropDowns(vehicle);
+                    return View(vehicle);
+                }
+                vehicle.MemberId = user.Id;
                 vehicle.CheckinTime = DateTime.Now;
                 db.Vehicles.Add(vehicle);
                 db.SaveChanges();

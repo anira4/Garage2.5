@@ -56,7 +56,8 @@ namespace Garage2._5.DAL
                 var member = new Member
                 {
                     Name = nameGen.Next(),
-                    Phone = numGen.Next()
+                    Phone = numGen.Next(),
+                    Password = "password"
                 };
                 member.Username = MakeUsername(member.Name);
                 if (!members.Any(m => m.Name == member.Name || m.Username == member.Username))
