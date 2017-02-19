@@ -37,7 +37,7 @@
             @Html.ActionLink(Html.DisplayNameFor(model => model.Registration).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "registration" ? "registration_dec" : "registration", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.ParkedTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "checkintime" ? "checkintime_dec" : "checkintime", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.ParkedTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "time" ? "time_dec" : "time", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.ParkingSpot).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "spot" ? "spot_dec" : "spot", currentFilter = ViewBag.CurrentFilter })

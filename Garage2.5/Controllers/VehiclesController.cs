@@ -69,11 +69,11 @@ namespace Garage2._5.Controllers
                 case "spot_dec":
                     vehicles = vehicles.OrderByDescending(v => v.ParkingUnit);
                     break;
-                case "checkintime_dec":
-                    vehicles = vehicles.OrderByDescending(v => v.CheckinTime);
+                case "time":
+                    vehicles = vehicles.OrderBy(v => v.CheckinTime);
                     break;
                 default:
-                    vehicles = vehicles.OrderBy(v => v.CheckinTime);
+                    vehicles = vehicles.OrderByDescending(v => v.CheckinTime);
                     break;
             }
             ViewBag.CurrentSort = orderBy;
