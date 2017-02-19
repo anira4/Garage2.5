@@ -68,9 +68,9 @@ namespace Garage2._5.Controllers
                     break;
                 default:
                     vehicles = vehicles.OrderBy(v => v.CheckinTime);
-                    break;                
+                    break;
             }
-                                                                                                  
+
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             return View(vehicles.ToList());
         }
@@ -108,7 +108,7 @@ namespace Garage2._5.Controllers
         }
 
         // POST: Vehicles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -156,11 +156,11 @@ namespace Garage2._5.Controllers
         }
 
         // POST: Vehicles/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Registration,CheckinTime,VehicleTypeId,MemberId")] Vehicle vehicle)
+        public ActionResult Edit([Bind(Include = "Id,Registration,VehicleTypeId,MemberId")] Vehicle vehicle)
         {
             if (ModelState.IsValid)
             {
