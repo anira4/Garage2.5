@@ -211,14 +211,10 @@ namespace Garage2._5.Controllers
             {
                 return HttpNotFound();
             }
-
-            TempData["checkouttime"] = DateTime.Now;
-            TempData["priceperminute"] = 1;
-            //vehicle.Cost = Math.Round((decimal)(vehicle.CheckoutTime - vehicle.CheckinTime).TotalMinutes) * db.GarageConfiguration.PricePerMinute;
-            //db.Vehicles.AddOrUpdate(v => v.Id, vehicle);
-            //db.SaveChanges();
-
-            return View(vehicle);
+            var receiptViewModel = new ReceiptViewModel();
+            receiptViewModel.Update(vehicle, DateTime.Now, 1);
+            TempData["receiptViewModel"] = receiptViewModel;
+            return View(receiptViewModel);
         }
 
 
@@ -228,12 +224,10 @@ namespace Garage2._5.Controllers
         public ActionResult CheckoutConfirmed(int id)
         {
             Vehicle vehicle = db.Vehicles.Find(id);
-            var receiptViewModel = new ReceiptViewModel();
-            receiptViewModel.Update(vehicle, (DateTime)TempData["checkouttime"], (int)TempData["priceperminut"]);
+
             db.Vehicles.Remove(vehicle);
             db.SaveChanges();
-            //return RedirectToAction("Index");
-            return View("Receipt", receiptViewModel);
+            return View("Receipt", TempData["receiptViewModel"]);
         }
 
         protected override void Dispose(bool disposing)

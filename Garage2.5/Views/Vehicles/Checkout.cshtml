@@ -1,5 +1,5 @@
 ﻿@using Garage2._5.Helper
-@model Garage2._5.Models.Vehicle
+@model Garage2._5.ViewModels.ReceiptViewModel
 
 @{
     ViewBag.Title = "Checkout Vehicle";
@@ -13,19 +13,11 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Owner.Username)
+            @Html.DisplayNameFor(model => model.Type)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Owner.Username)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Type.Type)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Type.Type)
+            @Html.DisplayFor(model => model.Type)
         </dd>
 
         <dt>
@@ -33,7 +25,15 @@
         </dt>
 
         <dd>
-            @RegistrationNormalizer.NormalizeForDisplay(Model.Registration)
+            @Html.DisplayFor(model => model.Registration)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingSpot)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParkingSpot)
         </dd>
 
         <dt>
@@ -42,6 +42,38 @@
 
         <dd>
             @Html.DisplayFor(model => model.CheckinTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CheckoutTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CheckoutTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalTimeString)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalTimeString)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPrice)
         </dd>
 
     </dl>

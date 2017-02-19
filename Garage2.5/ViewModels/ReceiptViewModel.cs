@@ -11,7 +11,7 @@ namespace Garage2._5.ViewModels
     public class ReceiptViewModel
     {
         [Display(Name = "Vehicle type")]
-        public VehicleType Type { get; set; }
+        public string Type { get; set; }
 
         public string Registration { get; set; }
 
@@ -26,8 +26,6 @@ namespace Garage2._5.ViewModels
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CheckoutTime { get; set; }
 
-        //[Display(Name = "Time period:")]
-        //[DisplayFormat(DataFormatString = "{0:dd\\:hh\\:mm}")]
         public TimeSpan TotalTime { get; set; }
 
         [Display(Name = "Time period")]
@@ -41,16 +39,13 @@ namespace Garage2._5.ViewModels
         [DisplayFormat(DataFormatString = "{0:c}")]
         public decimal TotalPrice { get; set; }
 
-        //public void Update(Vehicle vehicle, DateTime now, decimal pricePerMinute)
         public void Update(Vehicle vehicle, DateTime checkoutTime, decimal pricePerMinute)
         {
-            Type = vehicle.Type;
+            Type = vehicle.Type.Type;
             Registration = vehicle.Registration;
-            //ParkingSpot = vehicle.ParkingSpot;
+            ParkingSpot = vehicle.ParkingSpot;
             CheckinTime = vehicle.CheckinTime;
             CheckoutTime = checkoutTime;
-            //CheckoutTime = vehicle.CheckoutTime;
-
             TotalTime = CheckoutTime - CheckinTime;
 
             var sb = new System.Text.StringBuilder();
@@ -63,7 +58,7 @@ namespace Garage2._5.ViewModels
             TotalTimeString = sb.ToString();
 
             Price = pricePerMinute;
-            //TotalPrice = vehicle.Cost;
+            TotalPrice = pricePerMinute * (decimal)Math.Round(TotalTime.TotalMinutes);
 
         }
     }
