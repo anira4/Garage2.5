@@ -5,6 +5,7 @@ namespace Garage2._5.Models {
     public class Vehicle {
         public int Id { get; set; }
 
+        [Required]
         public string Registration { get; set; }
 
         [Display(Name = "Checkin time")]
@@ -15,6 +16,7 @@ namespace Garage2._5.Models {
         [DisplayFormat(DataFormatString = "{0:h\\:mm}")]
         public TimeSpan ParkedTime => DateTime.Now - CheckinTime;
 
+        [Required]
         public int VehicleTypeId { get; set; }
 
         public int MemberId { get; set; }
