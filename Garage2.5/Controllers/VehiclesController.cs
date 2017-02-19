@@ -222,8 +222,7 @@ namespace Garage2._5.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.MemberId = new SelectList(db.Members, "Id", "Username", vehicle.MemberId);
-            ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type", vehicle.VehicleTypeId);
+            MakeCreateDropDowns(vehicle);
             return View(vehicle);
         }
 
@@ -232,8 +231,7 @@ namespace Garage2._5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Registration,VehicleTypeId,MemberId")] Vehicle vehicle)
-        {
+        public ActionResult Edit([Bind(Include = "Id,Registration,VehicleTypeId")] Vehicle vehicle) {
             if (ModelState.IsValid)
             {
                 if (!registrationVerifier.Verify(vehicle.Registration))
@@ -259,7 +257,6 @@ namespace Garage2._5.Controllers
 
         private void MakeCreateDropDowns(Vehicle vehicle)
         {
-            ViewBag.MemberId = new SelectList(db.Members, "Id", "Username", vehicle?.MemberId);
             ViewBag.VehicleTypeId = new SelectList(db.VehicleTypes, "Id", "Type", vehicle?.VehicleTypeId);
         }
 
