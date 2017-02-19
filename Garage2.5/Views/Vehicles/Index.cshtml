@@ -6,10 +6,15 @@
 }
 
 <h2>@ViewBag.Title</h2>
-
 <p>
-    @Html.ActionLink("Checkin vehicle", "Checkin")
+    @ViewBag.Vacant
 </p>
+@if (ViewBag.HasVacantSpots) {
+    <p>
+        @Html.ActionLink("Checkin new vehicle", "Checkin")
+    </p>
+}
+
 <p>
     @using (Html.BeginForm("Index", "Vehicles", FormMethod.Get))
     {
@@ -34,29 +39,35 @@
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.ParkedTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "checkintime" ? "checkintime_dec" : "checkintime", currentFilter = ViewBag.CurrentFilter })
         </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.ParkingSpot).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "spot" ? "spot_dec" : "spot", currentFilter = ViewBag.CurrentFilter })
+        </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Owner.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Type.Type)
-        </td>
-        <td>
-            @RegistrationNormalizer.NormalizeForDisplay(item.Registration)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ParkedTime)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Checkout", "Checkout", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type.Type)
+            </td>
+            <td>
+                @RegistrationNormalizer.NormalizeForDisplay(item.Registration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkingSpot)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Checkout", "Checkout", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>

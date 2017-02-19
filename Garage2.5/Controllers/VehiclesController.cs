@@ -63,6 +63,12 @@ namespace Garage2._5.Controllers
                 case "registration_dec":
                     vehicles = vehicles.OrderByDescending(v => v.Registration);
                     break;
+                case "spot":
+                    vehicles = vehicles.OrderBy(v => v.ParkingUnit);
+                    break;
+                case "spot_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.ParkingUnit);
+                    break;
                 case "checkintime_dec":
                     vehicles = vehicles.OrderByDescending(v => v.CheckinTime);
                     break;
@@ -70,20 +76,21 @@ namespace Garage2._5.Controllers
                     vehicles = vehicles.OrderBy(v => v.CheckinTime);
                     break;
             }
+            ViewBag.CurrentSort = orderBy;
 
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
+            HasVacantSpots();
             return View(vehicles.ToList());
         }
 
 
-        //private bool HasVacantSpots()
-        //{
-        //    var total = db.GarageConfiguration.ParkingSpaces;
-        //    var vacant = (int)Math.Ceiling((total * 3 - db.Vehicles.ToArray().Sum(v => v.Units)) / 3.0);
-        //    ViewBag.Vacant = $"Vacant parking spots: {vacant}/{total}";
-        //    ViewBag.HasVacantSpots = vacant > 0;
-        //    return ViewBag.HasVacantSpots;
-        //}
+        private bool HasVacantSpots() {
+            var total = 100;
+            var vacant = (int)Math.Ceiling((total * 3 - db.Vehicles.ToArray().Sum(v => v.Units)) / 3.0);
+            ViewBag.Vacant = $"Vacant parking spots: {vacant}/{total}";
+            ViewBag.HasVacantSpots = vacant > 0;
+            return ViewBag.HasVacantSpots;
+        }
 
         // GET: Vehicles/Details/5
         public ActionResult Details(int? id)
@@ -101,8 +108,9 @@ namespace Garage2._5.Controllers
         }
 
         // GET: Vehicles/Create
-        public ActionResult Checkin()
-        {
+        public ActionResult Checkin() {
+            if (!HasVacantSpots())
+                return RedirectToAction("Index");
             MakeCreateDropDowns(null);
             return View();
         }

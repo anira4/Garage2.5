@@ -15,15 +15,34 @@ namespace Garage2._5.DAL
             return (names[0].Substring(startIndex: 0, length: 1) + names[1]).RemoveDiacritics().ToLowerInvariant();
         }
 
+        private static long FindFirstFreeSpot(IEnumerable<Vehicle> vehicles, bool isMc) {
+            vehicles = vehicles.OrderBy(v => v.ParkingUnit);
+            Vehicle lastVehicle;
+            if (isMc) {
+                lastVehicle = vehicles.LastOrDefault(v => v.Type.Size == 1);
+                if (lastVehicle != null) {
+                    if (lastVehicle.ParkingUnit % 3 == 0 || lastVehicle.ParkingUnit % 3 == 1)
+                        return lastVehicle.ParkingUnit + 1;
+                }
+            }
+            lastVehicle = vehicles.LastOrDefault();
+            if (lastVehicle == null)
+                return 0;
+            var ret = lastVehicle.ParkingUnit + lastVehicle.Units;
+            if (ret % 3 != 0) // Is this a MC?
+                ret += 3 - ret % 3; // Get next full space available
+            return ret;
+        }
+
         protected override void Seed(GarageContext context)
         {
             var vehicleTypes = new[]
             {
-                new VehicleType { Type = "Car" },
-                new VehicleType { Type = "Motorcycle" },
-                new VehicleType { Type = "Bus"  },
-                new VehicleType { Type = "Boat"  },
-                new VehicleType { Type = "Airplane" }
+                new VehicleType { Type = "Car", Size = 3 },
+                new VehicleType { Type = "Motorcycle", Size = 1 },
+                new VehicleType { Type = "Bus", Size = 6 },
+                new VehicleType { Type = "Boat", Size = 9 },
+                new VehicleType { Type = "Airplane", Size = 9 }
             };
             context.VehicleTypes.AddRange(vehicleTypes);
             context.SaveChanges();
@@ -51,13 +70,15 @@ namespace Garage2._5.DAL
             var rand = new Random();
 
             var vehicles = new List<Vehicle>(vehicleTypes.Length * 3);
-            while (vehicles.Capacity != vehicles.Count)
-            {
+            while (vehicles.Capacity != vehicles.Count) {
+                var vehicleType = vehicleTypes[rand.Next(vehicleTypes.Length)];
                 var vehicle = new Vehicle
                 {
-                    VehicleTypeId = vehicleTypes[rand.Next(vehicleTypes.Length)].Id,
+                    VehicleTypeId = vehicleType.Id,
+                    Type = vehicleType,
                     CheckinTime = DateTime.Now.AddMinutes(-rand.Next(24 * 60)),
-                    MemberId = members[rand.Next(members.Count)].Id
+                    MemberId = members[rand.Next(members.Count)].Id,
+                    ParkingUnit = FindFirstFreeSpot(vehicles, vehicleType.Size == 1)
                 };
                 do
                 {
