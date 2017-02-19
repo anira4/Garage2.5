@@ -216,23 +216,34 @@ namespace Garage2._5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Registration,VehicleTypeId")] Vehicle vehicle) {
-            if (ModelState.IsValid)
-            {
-                if (!registrationVerifier.Verify(vehicle.Registration))
+        public ActionResult Edit(int id, string registration, int vehicletypeid)
+        {
+            var vehicle = db.Vehicles.Find(id);
+            if (vehicle == null)
+                return HttpNotFound();
+            if (ModelState.IsValid) {
+                if (vehicle.Registration != registration)
                 {
-                    ModelState.AddModelError(nameof(vehicle.Registration), registrationVerifier.LastErrorMessage);
-                    MakeCreateDropDowns(vehicle);
-                    return View(vehicle);
+                    vehicle.Registration = RegistrationNormalizer.NormalizeForStorage(registration);
+                    if (!registrationVerifier.Verify(vehicle.Registration))
+                    {
+                        ModelState.AddModelError(nameof(vehicle.Registration), registrationVerifier.LastErrorMessage);
+                        MakeCreateDropDowns(vehicle, true);
+                        return View(vehicle);
+                    }
+                    if (db.Vehicles.Where(v => v.Id != vehicle.Id).Any(v => v.Registration == vehicle.Registration))
+                    {
+                        ModelState.AddModelError(nameof(vehicle.Registration), $"A vehicle with the registration '{RegistrationNormalizer.NormalizeForDisplay(vehicle.Registration)}' already exist in the garage");
+                        MakeCreateDropDowns(vehicle, true);
+                        return View(vehicle);
+                    }
                 }
-                vehicle.Registration = RegistrationNormalizer.NormalizeForStorage(vehicle.Registration);
-                if (db.Vehicles.Where(v => v.Id != vehicle.Id).Any(v => v.Registration == vehicle.Registration))
-                {
-                    ModelState.AddModelError(nameof(vehicle.Registration), $"A vehicle with the registration '{RegistrationNormalizer.NormalizeForDisplay(vehicle.Registration)}' already exist in the garage");
-                    MakeCreateDropDowns(vehicle);
-                    return View(vehicle);
+                if (vehicle.VehicleTypeId != vehicletypeid) {
+                    vehicle.VehicleTypeId = vehicletypeid; // Update the field
+                    vehicle.ParkingUnit = -1; // Go negative so it don't count anymore as we're moving it
+                    db.SaveChanges();
+                    vehicle.ParkingUnit = FindFirstFreeUnit(db.VehicleTypes.Single(t => t.Id == vehicletypeid).Size); // find the new parking spot this vehicle should be in
                 }
-                db.Entry(vehicle).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
