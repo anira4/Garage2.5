@@ -9,8 +9,8 @@
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
+/* Override the default bootstrap behavior where horizontal description lists
+   will truncate terms that are too long to fit in the left column
 */
 .dl-horizontal dt {
     white-space: normal;
@@ -21,4 +21,40 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+@media print
+{
+    .noprint {
+        display: none;
+    }
+
+    .dl-horizontal dt {
+    float: left;
+    width: 160px;
+    overflow: hidden;
+    clear: left;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+    .dl-horizontal dd {
+    margin-left: 180px;
+    }
+    .dl-horizontal dd:before,
+    .dl-horizontal dd:after {
+    display: table;
+    content: " ";
+    }
+    .dl-horizontal dd:after {
+    clear: both;
+    }
+    .dl-horizontal dd:before,
+    .dl-horizontal dd:after {
+    display: table;
+    content: " ";
+    }
+    .dl-horizontal dd:after {
+    clear: both;
+    }
 }
