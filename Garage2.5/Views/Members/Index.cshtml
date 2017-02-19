@@ -24,7 +24,7 @@
             @Html.ActionLink(Html.DisplayNameFor(model => model.Username).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "username" ? "username_dec" : "username", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Name).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "name" ? "name_dec" : "name", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Name).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "name" || ViewBag.CurrentSort == null ? "name_dec" : "name", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Phone).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "phone" ? "phone_dec" : "phone", currentFilter = ViewBag.CurrentFilter })

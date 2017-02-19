@@ -43,9 +43,6 @@ namespace Garage2._5.Controllers
                 case "username_dec":
                     members = members.OrderByDescending(m => m.Username);
                     break;
-                case "name":
-                    members = members.OrderBy(m => m.Name);
-                    break;
                 case "name_dec":
                     members = members.OrderByDescending(m => m.Name);
                     break;
