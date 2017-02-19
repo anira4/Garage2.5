@@ -86,6 +86,20 @@ namespace Garage2._5.Controllers
             return View(member);
         }
 
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Member member = db.Members.Find(id);
+            if (member == null)
+            {
+                return HttpNotFound();
+            }
+            return View(member);
+        }
+
         // GET: Members/Edit/5
         public ActionResult Edit(int? id)
         {
