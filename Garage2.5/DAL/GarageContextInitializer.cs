@@ -22,7 +22,7 @@ namespace Garage2._5.DAL
                 lastVehicle = vehicles.LastOrDefault(v => v.Type.Size == 1);
                 if (lastVehicle != null) {
                     if (lastVehicle.ParkingUnit % 3 == 0 || lastVehicle.ParkingUnit % 3 == 1)
-                        return lastVehicle.ParkingUnit + 1;
+                        return lastVehicle.ParkingUnit + lastVehicle.Units;
                 }
             }
             lastVehicle = vehicles.LastOrDefault();

@@ -115,6 +115,49 @@ namespace Garage2._5.Controllers
             return View();
         }
 
+        private long FindNextFreeUnit(long lastFreeUnit, IEnumerator<Vehicle> enumerator)
+        {
+            if (lastFreeUnit < enumerator.Current.ParkingUnit)
+                return lastFreeUnit;
+            lastFreeUnit += enumerator.Current.Units;
+            while (enumerator.MoveNext())
+            {
+                if (lastFreeUnit < enumerator.Current.ParkingUnit)
+                    return lastFreeUnit;
+                lastFreeUnit = enumerator.Current.ParkingUnit + enumerator.Current.Units;
+            }
+            return lastFreeUnit;
+        }
+
+        private long FindFirstFreeUnit(int size)
+        {
+            using (var enumerator = db.Vehicles.OrderBy(v => v.ParkingUnit).GetEnumerator())
+            {
+                var first = 0L;
+                while (enumerator.MoveNext())
+                {
+                    first = FindNextFreeUnit(first, enumerator);
+                    if (size == 1)
+                        return first;
+                    if (first % 3 == 0)
+                    {
+                        if (enumerator.Current == null)
+                            return first;
+                        if (enumerator.Current.ParkingUnit >= first + size)
+                            return first;
+                        first += 3; // Find next available spot
+                    }
+                    else
+                    {
+                        first -= first % 3;
+                        first += enumerator.Current?.Units ?? 3;
+                        first += 3;
+                    }
+                }
+                return first;
+            }
+        }
+
         // POST: Vehicles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -157,6 +200,8 @@ namespace Garage2._5.Controllers
                 }
                 vehicle.MemberId = user.Id;
                 vehicle.CheckinTime = DateTime.Now;
+                vehicle.Type = db.VehicleTypes.FirstOrDefault(t => t.Id == vehicle.VehicleTypeId);
+                vehicle.ParkingUnit = FindFirstFreeUnit(vehicle.Units);
                 db.Vehicles.Add(vehicle);
                 db.SaveChanges();
                 return RedirectToAction("Index");

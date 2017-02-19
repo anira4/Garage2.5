@@ -28,7 +28,7 @@ namespace Garage2._5.Models {
         [Display(Name = "Owner")]
         public virtual Member Owner { get; set; }
 
-        public int Units => Type.Size;
+        public int Units => Type?.Size ?? 0;
 
         [Display(Name = "Parking Space")]
         public string ParkingSpot {
