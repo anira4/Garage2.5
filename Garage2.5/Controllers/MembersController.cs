@@ -22,7 +22,7 @@ namespace Garage2._5.Controllers
             if (!db.IsConfigured)
                 return RedirectToAction("Index", "Setup");
             if (!db.Members.Any())
-                return RedirectToAction("Create");
+                return RedirectToAction("Register");
             IQueryable<Member> members = db.Members;
 
             if (searchString != null)
@@ -71,20 +71,20 @@ namespace Garage2._5.Controllers
             return View(new PagedList<Member>(members.ToList(), page, db.GarageConfiguration.MembersPerPage));
         }
 
-        // GET: Members/Create
-        public ActionResult Create()
+        // GET: Members/Register
+        public ActionResult Register()
         {
             if (!db.IsConfigured)
                 return RedirectToAction("Index", "Setup");
             return View();
         }
 
-        // POST: Members/Create
+        // POST: Members/Register
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Username,Password,Name,Phone")] Member member)
+        public ActionResult Register([Bind(Include = "Id,Username,Password,Name,Phone")] Member member)
         {
             if (ModelState.IsValid)
             {
