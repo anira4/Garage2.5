@@ -141,6 +141,7 @@
     <Compile Include="Controllers\VehiclesController.cs" />
     <Compile Include="DAL\GarageContext.cs" />
     <Compile Include="DAL\GarageContextInitializer.cs" />
+    <Compile Include="Helper\RandomBrand.cs" />
     <Compile Include="Helper\RandomPhone.cs" />
     <Compile Include="Helper\StringExtensions.cs" />
     <Compile Include="Global.asax.cs">
