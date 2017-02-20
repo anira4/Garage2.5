@@ -156,7 +156,7 @@ namespace Garage2._5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Checkin([Bind(Include = "Id,Registration,VehicleTypeId")] Vehicle vehicle, string username, string password)
+        public ActionResult Checkin([Bind(Include = "Id,Registration,VehicleTypeId, VehicleColorId, Brand, Model, NumberOfWheels")] Vehicle vehicle, string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username)) {
                 ModelState.AddModelError("username", "The Username field is required.");
@@ -232,11 +232,15 @@ namespace Garage2._5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, string registration, int vehicletypeid)
+        public ActionResult Edit(int id, string registration, int vehicletypeid, int vehiclecolorid, string brand, string model, int numberofwheels)
         {
             var vehicle = db.Vehicles.Find(id);
             if (vehicle == null)
                 return HttpNotFound();
+            vehicle.VehicleColorId = vehiclecolorid;
+            vehicle.Brand = brand;
+            vehicle.Model = model;
+            vehicle.NumberOfWheels = numberofwheels;
             if (ModelState.IsValid) {
                 if (vehicle.Registration != registration)
                 {
@@ -270,6 +274,7 @@ namespace Garage2._5.Controllers
         private void MakeCreateDropDowns(Vehicle vehicle, bool edit = false)
         {
             ViewBag.VehicleTypeId = GetSupportedList(vehicle, edit);
+            ViewBag.VehicleColorId = new SelectList(db.VehicleColors, "Id", "Name", vehicle?.VehicleColorId);
         }
 
         // GET: Vehicles/Delete/5

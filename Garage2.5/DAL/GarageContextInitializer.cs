@@ -47,6 +47,18 @@ namespace Garage2._5.DAL
             context.VehicleTypes.AddRange(vehicleTypes);
             context.SaveChanges();
 
+            var vehicleColors = new[]
+{
+                new VehicleColor { Name = "Black"},
+                new VehicleColor { Name = "Blue"},
+                new VehicleColor { Name = "Brown"},
+                new VehicleColor { Name = "Green"},
+                new VehicleColor { Name = "Red" },
+                new VehicleColor { Name = "White" }
+            };
+            context.VehicleColors.AddRange(vehicleColors);
+            context.SaveChanges();
+
             var nameGen = new RandomName();
             var numGen = new RandomPhone();
 
@@ -79,7 +91,11 @@ namespace Garage2._5.DAL
                     Type = vehicleType,
                     CheckinTime = DateTime.Now.AddMinutes(-rand.Next(24 * 60)),
                     MemberId = members[rand.Next(members.Count)].Id,
-                    ParkingUnit = FindFirstFreeSpot(vehicles, vehicleType.Size == 1)
+                    ParkingUnit = FindFirstFreeSpot(vehicles, vehicleType.Size == 1),
+                    VehicleColorId = vehicleColors[rand.Next(vehicleColors.Length)].Id,
+                    Brand = "Volvo",
+                    Model = "740",
+                    NumberOfWheels = 4
                 };
                 do
                 {
