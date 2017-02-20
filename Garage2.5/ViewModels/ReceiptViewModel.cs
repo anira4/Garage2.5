@@ -54,7 +54,7 @@ namespace Garage2._5.ViewModels
             if (TotalTime.Hours > 0)
                 sb.AppendFormat("{0} hrs ", TotalTime.Hours);
             if (TotalTime.Minutes > 0)
-                sb.AppendFormat("{0} min", TotalTime.Minutes);
+                sb.AppendFormat("{0:F0} min", Math.Round(TotalTime.TotalMinutes) % 60);
             TotalTimeString = sb.ToString();
 
             Price = pricePerMinute;

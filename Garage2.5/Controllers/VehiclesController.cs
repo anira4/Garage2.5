@@ -228,7 +228,7 @@ namespace Garage2._5.Controllers
                 vehicle.CheckinTime = DateTime.Now;
                 vehicle.Type = db.VehicleTypes.FirstOrDefault(t => t.Id == vehicle.VehicleTypeId);
                 vehicle.ParkingUnit = FindFirstFreeUnit(vehicle.Units);
-                if (vehicle.ParkingUnit + vehicle.Units < db.GarageConfiguration.ParkingUnits)
+                if (vehicle.ParkingUnit + vehicle.Units > db.GarageConfiguration.ParkingUnits)
                 {
                     ModelState.AddModelError(nameof(vehicle.VehicleTypeId), $"Not enough space to park a {vehicle.Type.Type}");
                     MakeCreateDropDowns(null);

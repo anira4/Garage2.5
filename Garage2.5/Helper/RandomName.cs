@@ -104,7 +104,7 @@ namespace Garage2._5.Helper
         public string Next()
         {
             var sb = new StringBuilder();
-            sb.Append(random.Next() % 2 == 0
+            sb.Append(random.Next(0, 1) == 0
                 ? femaleNames[random.Next(femaleNames.Length)]
                 : maleNames[random.Next(maleNames.Length)]);
             sb.Append(" ");
