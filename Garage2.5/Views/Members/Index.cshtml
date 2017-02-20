@@ -30,6 +30,9 @@
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.First().Phone).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "phone" ? "phone_dec" : "phone", currentFilter = ViewBag.CurrentFilter })
         </th>
+        <th>
+            @Html.ActionLink("Parked Vehicles", "Index", new { orderBy = ViewBag.CurrentSort == "count" ? "count_dec" : "count", currentFilter = ViewBag.CurrentFilter })
+        </th>
         <th></th>
     </tr>
 
@@ -45,7 +48,11 @@
             @Html.DisplayFor(modelItem => item.Phone)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.ParkedVehicles.Count)
+        </td>
+        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.Id })
         </td>
     </tr>
