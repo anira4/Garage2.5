@@ -54,7 +54,9 @@ textarea {
     background-color: white;
     color: black;
 }
-
+.selectStyle {
+    height: 24px;
+}
 
 @media print
 {
