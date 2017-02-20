@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -20,5 +21,9 @@ namespace Garage2._5.DAL
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<VehicleType> VehicleTypes { get; set; }
         public DbSet<VehicleColor> VehicleColors { get; set; }
+        public DbSet<Configuration> Configurations { get; set; }
+
+        public Configuration GarageConfiguration => Configurations.OrderBy(c => c.Id).ToArray().LastOrDefault();
+        public bool IsConfigured => GarageConfiguration != null;
     }
 }

@@ -137,6 +137,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\VehiclesController.cs" />
     <Compile Include="DAL\GarageContext.cs" />
     <Compile Include="DAL\GarageContextInitializer.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Helper\RandomRegistration.cs" />
     <Compile Include="Helper\RegistrationNormalizer.cs" />
     <Compile Include="Helper\RegistrationVerifier.cs" />
+    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleColor.cs" />
@@ -203,6 +205,7 @@
     <Content Include="Views\Vehicles\Receipt.cshtml" />
     <Content Include="Views\Members\Details.cshtml" />
     <Content Include="Views\Vehicles\Overview.cshtml" />
+    <Content Include="Views\Setup\Index.cshtml" />
     <Content Include="Views\Vehicles\Statistics.cshtml" />
   </ItemGroup>
   <ItemGroup>

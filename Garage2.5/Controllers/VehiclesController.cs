@@ -21,6 +21,10 @@ namespace Garage2._5.Controllers
         // GET: Vehicles
         public ActionResult Index(string orderBy, string currentFilter, string searchString, int? selectedvehicletype = null, int page = 1)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
+            if (!db.Vehicles.Any())
+                return RedirectToAction("Checkin");
             var vehicles = db.Vehicles.Include(v => v.Owner).Include(v => v.Type);
 
             if (selectedvehicletype != null)
@@ -80,12 +84,12 @@ namespace Garage2._5.Controllers
 
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             HasVacantSpots();
-            return View(new PagedList.PagedList<Vehicle>(vehicles.ToList(), page, 10));
+            return View(new PagedList.PagedList<Vehicle>(vehicles.ToList(), page, db.GarageConfiguration.VehiclesPerPage));
         }
 
 
         private bool HasVacantSpots() {
-            var total = 100;
+            var total = db.GarageConfiguration.ParkingSpaces;
             var vacant = (int)Math.Ceiling((total * 3 - db.Vehicles.ToArray().Sum(v => v.Units)) / 3.0);
             ViewBag.Vacant = $"Vacant parking spots: {vacant}/{total}";
             ViewBag.HasVacantSpots = vacant > 0;
@@ -95,6 +99,8 @@ namespace Garage2._5.Controllers
         // GET: Vehicles/Details/5
         public ActionResult Details(int? id)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -109,7 +115,7 @@ namespace Garage2._5.Controllers
 
         private IEnumerable<SelectListItem> GetSupportedList(Vehicle vehicle, bool edit) {
             var sizes = db.VehicleTypes.Select(v => v.Size).Distinct().ToArray();
-            var supportedSize = sizes.Where(s => FindFirstFreeUnit(s) + s <= 300);
+            var supportedSize = sizes.Where(s => FindFirstFreeUnit(s) + s <= db.GarageConfiguration.ParkingUnits);
             var selectList = db.VehicleTypes.ToArray().Select(t => new SelectListItem() {
                 Disabled = !supportedSize.Contains(t.Size),
                 Text = t.Type,
@@ -125,6 +131,8 @@ namespace Garage2._5.Controllers
 
         // GET: Vehicles/Create
         public ActionResult Checkin() {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (!HasVacantSpots())
                 return RedirectToAction("Index");
             MakeCreateDropDowns(null);
@@ -187,6 +195,12 @@ namespace Garage2._5.Controllers
                 vehicle.CheckinTime = DateTime.Now;
                 vehicle.Type = db.VehicleTypes.FirstOrDefault(t => t.Id == vehicle.VehicleTypeId);
                 vehicle.ParkingUnit = FindFirstFreeUnit(vehicle.Units);
+                if (vehicle.ParkingUnit + vehicle.Units < db.GarageConfiguration.ParkingUnits)
+                {
+                    ModelState.AddModelError(nameof(vehicle.VehicleTypeId), $"Not enough space to park a {vehicle.Type.Type}");
+                    MakeCreateDropDowns(null);
+                    return View(vehicle);
+                }
                 db.Vehicles.Add(vehicle);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -198,6 +212,8 @@ namespace Garage2._5.Controllers
         // GET: Vehicles/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -264,6 +280,8 @@ namespace Garage2._5.Controllers
         // GET: Vehicles/Delete/5
         public ActionResult Checkout(int? id)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -294,7 +312,9 @@ namespace Garage2._5.Controllers
 
         public ActionResult Overview(int page = 1)
         {
-            var spots = new OverviewViewModel[100];
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
+            var spots = new OverviewViewModel[db.GarageConfiguration.ParkingSpaces];
             foreach (var vehicle in db.Vehicles.OrderBy(v => v.ParkingUnit))
             {
                 var first = (int)vehicle.ParkingUnit / 3;
