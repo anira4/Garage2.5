@@ -36,6 +36,7 @@ namespace Garage2._5.DAL
 
         protected override void Seed(GarageContext context)
         {
+            context.Configurations.Add(new Configuration());
             var vehicleTypes = new[]
             {
                 new VehicleType { Type = "Car", Size = 3 },

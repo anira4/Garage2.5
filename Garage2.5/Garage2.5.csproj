@@ -207,6 +207,7 @@
     <Content Include="Views\Vehicles\Overview.cshtml" />
     <Content Include="Views\Setup\Index.cshtml" />
     <Content Include="Views\Vehicles\Statistics.cshtml" />
+    <Content Include="Views\Vehicles\DetailedList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
