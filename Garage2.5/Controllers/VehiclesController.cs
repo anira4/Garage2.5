@@ -80,7 +80,7 @@ namespace Garage2._5.Controllers
 
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             HasVacantSpots();
-            return View(vehicles.ToList());
+            return View(new PagedList.PagedList<Vehicle>(vehicles.ToList(), page, 10));
         }
 
 
@@ -312,7 +312,7 @@ namespace Garage2._5.Controllers
                     continue;
                 spots[i] = new OverviewViewModel(i + 1);
             }
-            return View(spots);
+            return View(new PagedList.PagedList<OverviewViewModel>(spots, page, 100));
         }
 
         protected override void Dispose(bool disposing)

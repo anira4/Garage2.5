@@ -1,5 +1,6 @@
 ﻿@using Garage2._5.Helper
-@model IEnumerable<Garage2._5.Models.Vehicle>
+@using PagedList.Mvc
+@model PagedList.IPagedList<Garage2._5.Models.Vehicle>
 
 @{
     ViewBag.Title = "Parked Vehicles";
@@ -28,19 +29,19 @@
 <table class="table table-striped">
     <tr>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Owner).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "user" ? "user_dec" : "user", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.First().Owner).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "user" ? "user_dec" : "user", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Type).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "type" ? "type_dec" : "type", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.First().Type).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "type" ? "type_dec" : "type", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Registration).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "registration" ? "registration_dec" : "registration", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.First().Registration).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "registration" ? "registration_dec" : "registration", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.ParkedTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "time" ? "time_dec" : "time", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.First().ParkedTime).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "time" ? "time_dec" : "time", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.ParkingSpot).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "spot" ? "spot_dec" : "spot", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.First().ParkingSpot).ToString(), "Index", new { orderBy = ViewBag.CurrentSort == "spot" ? "spot_dec" : "spot", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -71,3 +72,10 @@
     }
 
 </table>
+@if (Model.PageCount > 1)
+{
+    <p>
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, orderBy = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, selectedvehicletype = ViewBag.selectedvehicletype, selectedvehiclecolor = ViewBag.selectedvehiclecolor }))
+    </p>
+}
