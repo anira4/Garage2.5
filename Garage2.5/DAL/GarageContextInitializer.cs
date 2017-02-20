@@ -15,15 +15,16 @@ namespace Garage2._5.DAL
             return (names[0].Substring(startIndex: 0, length: 1) + names[1]).RemoveDiacritics().ToLowerInvariant();
         }
 
-        private static long FindFirstFreeSpot(IEnumerable<Vehicle> vehicles, bool isMc) {
+        private static long FindFirstFreeSpot(IEnumerable<Vehicle> vehicles, bool isMc)
+        {
             vehicles = vehicles.OrderBy(v => v.ParkingUnit);
             Vehicle lastVehicle;
-            if (isMc) {
+            if (isMc)
+            {
                 lastVehicle = vehicles.LastOrDefault(v => v.Type.Size == 1);
-                if (lastVehicle != null) {
+                if (lastVehicle != null)
                     if (lastVehicle.ParkingUnit % 3 == 0 || lastVehicle.ParkingUnit % 3 == 1)
                         return lastVehicle.ParkingUnit + lastVehicle.Units;
-                }
             }
             lastVehicle = vehicles.LastOrDefault();
             if (lastVehicle == null)
@@ -39,23 +40,23 @@ namespace Garage2._5.DAL
             context.Configurations.Add(new Configuration());
             var vehicleTypes = new[]
             {
-                new VehicleType { Type = "Car", Size = 3 },
-                new VehicleType { Type = "Motorcycle", Size = 1 },
-                new VehicleType { Type = "Bus", Size = 6 },
-                new VehicleType { Type = "Boat", Size = 9 },
-                new VehicleType { Type = "Airplane", Size = 9 }
+                new VehicleType {Type = "Car", Size = 3},
+                new VehicleType {Type = "Motorcycle", Size = 1},
+                new VehicleType {Type = "Bus", Size = 6},
+                new VehicleType {Type = "Boat", Size = 9},
+                new VehicleType {Type = "Airplane", Size = 9}
             };
             context.VehicleTypes.AddRange(vehicleTypes);
             context.SaveChanges();
 
             var vehicleColors = new[]
-{
-                new VehicleColor { Name = "Black"},
-                new VehicleColor { Name = "Blue"},
-                new VehicleColor { Name = "Brown"},
-                new VehicleColor { Name = "Green"},
-                new VehicleColor { Name = "Red" },
-                new VehicleColor { Name = "White" }
+            {
+                new VehicleColor {Name = "Black"},
+                new VehicleColor {Name = "Blue"},
+                new VehicleColor {Name = "Brown"},
+                new VehicleColor {Name = "Green"},
+                new VehicleColor {Name = "Red"},
+                new VehicleColor {Name = "White"}
             };
             context.VehicleColors.AddRange(vehicleColors);
             context.SaveChanges();
@@ -81,10 +82,12 @@ namespace Garage2._5.DAL
             context.SaveChanges();
 
             var gen = new RandomRegistration();
+            var brandGen = new RandomBrand();
             var rand = new Random();
 
             var vehicles = new List<Vehicle>(vehicleTypes.Length * 3);
-            while (vehicles.Capacity != vehicles.Count) {
+            while (vehicles.Capacity != vehicles.Count)
+            {
                 var vehicleType = vehicleTypes[rand.Next(vehicleTypes.Length)];
                 var vehicle = new Vehicle
                 {
@@ -94,10 +97,28 @@ namespace Garage2._5.DAL
                     MemberId = members[rand.Next(members.Count)].Id,
                     ParkingUnit = FindFirstFreeSpot(vehicles, vehicleType.Size == 1),
                     VehicleColorId = vehicleColors[rand.Next(vehicleColors.Length)].Id,
-                    Brand = "Volvo",
-                    Model = "740",
-                    NumberOfWheels = 4
+                    Brand = brandGen.Next(),
+                    Model = rand.Next(minValue: 100, maxValue: 10000).ToString()
                 };
+                if (vehicle.VehicleTypeId == vehicleTypes[0].Id)
+                {
+                    vehicle.NumberOfWheels = 4;
+                }
+                else if (vehicle.VehicleTypeId == vehicleTypes[1].Id)
+                {
+                    vehicle.NumberOfWheels = rand.Next(minValue: 2, maxValue: 3);
+                }
+                else if (vehicle.VehicleTypeId == vehicleTypes[3].Id)
+                {
+                    vehicle.NumberOfWheels = rand.Next(minValue: 2, maxValue: 4);
+                    vehicle.NumberOfWheels -= vehicle.NumberOfWheels % 2; // Make sure it has an even amount of wheels
+                }
+                else
+                {
+                    vehicle.NumberOfWheels = rand.Next(minValue: 4, maxValue: 10);
+                    vehicle.NumberOfWheels -= vehicle.NumberOfWheels % 2; // Make sure it has an even amount of wheels
+                }
+
                 do
                 {
                     vehicle.Registration = gen.Next();
