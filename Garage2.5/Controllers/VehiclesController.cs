@@ -80,7 +80,7 @@ namespace Garage2._5.Controllers
 
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             HasVacantSpots();
-            return View(vehicles.ToList());
+            return View(new PagedList.PagedList<Vehicle>(vehicles.ToList(), page, 10));
         }
 
 
@@ -290,6 +290,34 @@ namespace Garage2._5.Controllers
             db.Vehicles.Remove(vehicle);
             db.SaveChanges();
             return View("Receipt", TempData["receiptViewModel"]);
+        }
+
+        public ActionResult Overview(int page = 1)
+        {
+            var spots = new OverviewViewModel[100];
+            foreach (var vehicle in db.Vehicles.OrderBy(v => v.ParkingUnit))
+            {
+                var first = (int)vehicle.ParkingUnit / 3;
+                if (spots[first] != null)
+                {
+                    var list = spots[first].ParkedVehicles.ToList();
+                    list.Add(vehicle);
+                    spots[first] = new OverviewViewModel(first + 1, list);
+                }
+                else
+                {
+                    spots[first] = new OverviewViewModel(first + 1, new []{ vehicle });
+                    for (int i = 0; i < vehicle.Units / 3; i++)
+                        spots[first + i] = new OverviewViewModel(first + i + 1, new[] { vehicle });
+                }
+            }
+            for (var i = 0; i < spots.Length; i++)
+            {
+                if (spots[i] != null)
+                    continue;
+                spots[i] = new OverviewViewModel(i + 1);
+            }
+            return View(new PagedList.PagedList<OverviewViewModel>(spots, page, 100));
         }
 
         protected override void Dispose(bool disposing)

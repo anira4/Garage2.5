@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Garage2._5.DAL;
 using Garage2._5.Models;
+using PagedList;
 
 namespace Garage2._5.Controllers
 {
@@ -57,7 +58,7 @@ namespace Garage2._5.Controllers
                     break;
             }
             ViewBag.CurrentSort = orderBy;
-            return View(members.ToList());
+            return View(new PagedList<Member>(members.ToList(), page, 10));
         }
 
         // GET: Members/Create
