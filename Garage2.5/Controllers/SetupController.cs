@@ -13,7 +13,7 @@ namespace Garage2._5.Controllers
         public ActionResult Index()
         {
             if (db.IsConfigured)
-                return RedirectToAction("Index", "Vehicles");
+                return RedirectToAction("Index", "Members");
             return View(new Configuration());
         }
 
