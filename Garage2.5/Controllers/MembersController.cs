@@ -19,6 +19,10 @@ namespace Garage2._5.Controllers
         // GET: Members
         public ActionResult Index(string orderBy, string currentFilter, string searchString, int page = 1)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
+            if (!db.Members.Any())
+                return RedirectToAction("Create");
             IQueryable<Member> members = db.Members;
 
             if (searchString != null)
@@ -58,12 +62,14 @@ namespace Garage2._5.Controllers
                     break;
             }
             ViewBag.CurrentSort = orderBy;
-            return View(new PagedList<Member>(members.ToList(), page, 10));
+            return View(new PagedList<Member>(members.ToList(), page, db.GarageConfiguration.MembersPerPage));
         }
 
         // GET: Members/Create
         public ActionResult Create()
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             return View();
         }
 
@@ -86,6 +92,8 @@ namespace Garage2._5.Controllers
 
         public ActionResult Details(int? id)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -101,6 +109,8 @@ namespace Garage2._5.Controllers
         // GET: Members/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -132,6 +142,8 @@ namespace Garage2._5.Controllers
         // GET: Members/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!db.IsConfigured)
+                return RedirectToAction("Index", "Setup");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
