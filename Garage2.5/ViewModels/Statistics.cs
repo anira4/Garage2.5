@@ -41,9 +41,13 @@ namespace Garage2._5.ViewModels
         [Display(Name = "Total Spots Used")]
         public string TotalSpaceUsed => $"{TotalUnitsUsed / 3.0:F1} / {MaximumUnits / 3}";
 
+        [Display(Name = "Total Members")]
+        public int TotalMembers { get; set; }
+
         public void Update(Vehicle vehicle, DateTime now, decimal pricePerMinute)
         {
             TotalVehicles += 1;
+            TotalMembers += 1;
             TotalWheels += vehicle.NumberOfWheels;
             TotalCost += (decimal)Math.Round((now - vehicle.CheckinTime).TotalMinutes) * pricePerMinute;
             TotalUnitsUsed += vehicle.Units;
