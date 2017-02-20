@@ -18,8 +18,18 @@ namespace Garage2._5.Controllers
         private GarageContext db = new GarageContext();
         private RegistrationVerifier registrationVerifier = new RegistrationVerifier();
 
+        public ActionResult DetailedList(string orderBy, string currentFilter, string searchString, int? selectedvehicletype = null, int page = 1)
+        {
+            return GetPagedVehiclesList(orderBy, currentFilter, searchString, selectedvehicletype, page, nameof(DetailedList));
+        }
+
         // GET: Vehicles
         public ActionResult Index(string orderBy, string currentFilter, string searchString, int? selectedvehicletype = null, int page = 1)
+        {
+            return GetPagedVehiclesList(orderBy, currentFilter, searchString, selectedvehicletype, page, nameof(Index));
+        }
+
+        private ActionResult GetPagedVehiclesList(string orderBy, string currentFilter, string searchString, int? selectedvehicletype, int page, string view)
         {
             if (!db.IsConfigured)
                 return RedirectToAction("Index", "Setup");
@@ -42,7 +52,7 @@ namespace Garage2._5.Controllers
                 searchString = currentFilter;
             }
             ViewBag.CurrentFilter = searchString;
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 vehicles = vehicles.Where(v => v.Registration.Contains(searchString));
             }
@@ -73,6 +83,30 @@ namespace Garage2._5.Controllers
                 case "spot_dec":
                     vehicles = vehicles.OrderByDescending(v => v.ParkingUnit);
                     break;
+                case "brand":
+                    vehicles = vehicles.OrderBy(v => v.Brand);
+                    break;
+                case "brand_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.Brand);
+                    break;
+                case "model":
+                    vehicles = vehicles.OrderBy(v => v.Model);
+                    break;
+                case "model_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.Model);
+                    break;
+                case "wheels":
+                    vehicles = vehicles.OrderBy(v => v.NumberOfWheels);
+                    break;
+                case "wheels_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.NumberOfWheels);
+                    break;
+                case "color":
+                    vehicles = vehicles.OrderBy(v => v.VehicleColorId);
+                    break;
+                case "color_dec":
+                    vehicles = vehicles.OrderByDescending(v => v.VehicleColorId);
+                    break;
                 case "time":
                     vehicles = vehicles.OrderBy(v => v.CheckinTime);
                     break;
@@ -84,10 +118,9 @@ namespace Garage2._5.Controllers
 
             ViewBag.VehicleTypes = new SelectList(db.VehicleTypes, "Id", "Type");
             HasVacantSpots();
-            return View(new PagedList.PagedList<Vehicle>(vehicles.ToList(), page, db.GarageConfiguration.VehiclesPerPage));
+            return View(view, new PagedList.PagedList<Vehicle>(vehicles.ToList(), page, db.GarageConfiguration.VehiclesPerPage));
         }
-
-
+        
         private bool HasVacantSpots() {
             var total = db.GarageConfiguration.ParkingSpaces;
             var vacant = (int)Math.Ceiling((total * 3 - db.Vehicles.ToArray().Sum(v => v.Units)) / 3.0);
