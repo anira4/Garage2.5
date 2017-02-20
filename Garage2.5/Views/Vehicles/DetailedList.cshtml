@@ -17,7 +17,7 @@
 }
 
 <p>
-    @using (Html.BeginForm("Index", "Vehicles", FormMethod.Get))
+    @using (Html.BeginForm("DetailedList", "Vehicles", FormMethod.Get))
     {
         <span>
             Find by registration number: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)

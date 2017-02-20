@@ -54,6 +54,7 @@ namespace Garage2._5.Controllers
             ViewBag.CurrentFilter = searchString;
             if (!string.IsNullOrEmpty(searchString))
             {
+                searchString = RegistrationNormalizer.NormalizeForStorage(searchString);
                 vehicles = vehicles.Where(v => v.Registration.Contains(searchString));
             }
 
@@ -143,6 +144,7 @@ namespace Garage2._5.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.RefUrl = Request.UrlReferrer;
             return View(vehicle);
         }
 
