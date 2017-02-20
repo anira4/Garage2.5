@@ -287,6 +287,34 @@ namespace Garage2._5.Controllers
             return View("Receipt", TempData["receiptViewModel"]);
         }
 
+        public ActionResult Overview(int page = 1)
+        {
+            var spots = new OverviewViewModel[100];
+            foreach (var vehicle in db.Vehicles.OrderBy(v => v.ParkingUnit))
+            {
+                var first = (int)vehicle.ParkingUnit / 3;
+                if (spots[first] != null)
+                {
+                    var list = spots[first].ParkedVehicles.ToList();
+                    list.Add(vehicle);
+                    spots[first] = new OverviewViewModel(first + 1, list);
+                }
+                else
+                {
+                    spots[first] = new OverviewViewModel(first + 1, new []{ vehicle });
+                    for (int i = 0; i < vehicle.Units / 3; i++)
+                        spots[first + i] = new OverviewViewModel(first + i + 1, new[] { vehicle });
+                }
+            }
+            for (var i = 0; i < spots.Length; i++)
+            {
+                if (spots[i] != null)
+                    continue;
+                spots[i] = new OverviewViewModel(i + 1);
+            }
+            return View(spots);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
