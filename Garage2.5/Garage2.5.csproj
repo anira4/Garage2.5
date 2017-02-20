@@ -156,6 +156,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\OverviewViewModel.cs" />
     <Compile Include="ViewModels\ReceiptViewModel.cs" />
+    <Compile Include="ViewModels\Statistics.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -202,6 +203,7 @@
     <Content Include="Views\Vehicles\Receipt.cshtml" />
     <Content Include="Views\Members\Details.cshtml" />
     <Content Include="Views\Vehicles\Overview.cshtml" />
+    <Content Include="Views\Vehicles\Statistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

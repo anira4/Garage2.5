@@ -1,0 +1,92 @@
+﻿@using Garage2._5.Models
+@model Garage2._5.ViewModels.Statistics
+
+@{
+    ViewBag.Title = "Statistics";
+}
+
+<h2>General Statistics</h2>
+
+<ul>
+    <li>@Html.DisplayNameFor(m => m.TotalSpaceUsed): @Html.DisplayFor(m => m.TotalSpaceUsed)</li>
+    <li>@Html.DisplayNameFor(m => m.TotalVehicles): @Html.DisplayFor(m => m.TotalVehicles)</li>
+    <li>@Html.DisplayNameFor(m => m.TotalCost): @Html.DisplayFor(m => m.TotalCost)</li>
+    <li>@Html.DisplayNameFor(m => m.TotalWheels): @Html.DisplayFor(m => m.TotalWheels)</li>
+</ul>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>@Html.DisplayNameFor(m => m.TypeStatistics)</h2>
+
+            <table class="table table-striped StatsTable">
+                <tr>
+                    <th>@Html.DisplayNameFor(t => new Vehicle().Type)</th>
+                    <th>Count</th>
+                </tr>
+                @foreach (var item in Model.TypeStatistics)
+            {
+                    <tr>
+                        <td>@Html.DisplayFor(m => Model.TypeNames[item.Key])</td>
+                        <td>@Html.DisplayFor(m => item.Value)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <h2>@Html.DisplayNameFor(m => m.ColorStatistics)</h2>
+
+            <table class="table table-striped StatsTable">
+                <tr>
+                    <th>@Html.DisplayNameFor(t => new Vehicle().Color)</th>
+                    <th>Count</th>
+                </tr>
+                @foreach (var item in Model.ColorStatistics)
+            {
+                    <tr>
+                        <td>@Html.DisplayFor(m => Model.ColorNames[item.Key])</td>
+                        <td>@Html.DisplayFor(m => item.Value)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>@Html.DisplayNameFor(m => m.TypeColorStatistics)</h2>
+
+            <table class="table table-striped StatsTable">
+                <tr>
+                    <th>@Html.DisplayNameFor(t => new Vehicle().Type)</th>
+                    @foreach (var color in Model.ColorNames.OrderBy(kvp => kvp.Key))
+                    {
+                        <th>
+                            @Html.DisplayFor(t => color.Value)
+                        </th>
+                    }
+                </tr>
+                @foreach (var item in Model.TypeColorStatistics)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(m => Model.TypeNames[item.Key])</td>
+                        @foreach (var color in Model.ColorNames.OrderBy(kvp => kvp.Key))
+                        {
+                            if (item.Value.ContainsKey(color.Key))
+                            {
+                                <td>
+                                    @Html.DisplayFor(t => item.Value[color.Key])
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
