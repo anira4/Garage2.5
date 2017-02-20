@@ -17,6 +17,7 @@ namespace Garage2._5.Models
         public string Phone { get; set; }
 
         // Navigation Properties
+        [Display(Name = "Parked Vehicles")]
         public virtual ICollection<Vehicle> ParkedVehicles { get; set; }
     }
 }
