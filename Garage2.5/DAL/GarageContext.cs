@@ -19,6 +19,6 @@ namespace Garage2._5.DAL
         public DbSet<Member> Members { get; set;  }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<VehicleType> VehicleTypes { get; set; }
-
+        public DbSet<VehicleColor> VehicleColors { get; set; }
     }
 }

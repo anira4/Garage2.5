@@ -26,6 +26,16 @@ namespace Garage2._5.Models {
         // Navigation Properties
         [Display(Name = "Vehicle type")]
         public virtual VehicleType Type { get; set; }
+        [Required]
+        public int VehicleColorId { get; set; }
+        [Display(Name = "Color")]
+        public virtual VehicleColor Color { get; set; }
+        public string Brand { get; set; }
+        public string Model { get; set; }
+        [Display(Name = "Number of wheels")]
+        [Required]
+        public int NumberOfWheels { get; set; }
+
 
         [Display(Name = "Owner")]
         public virtual Member Owner { get; set; }
